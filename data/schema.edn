@@ -28,4 +28,22 @@
   :db/doc "A competitor's ELO score."
   :db.install/_attribute :db.part/db}
 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :competitor/password
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "A competitor's password."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :competitor/roles
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db/doc "A competitors roles."
+  :db.install/_attribute :db.part/db}
+
+ [:db/add #db/id[:db.part/user] :db/ident :competitor.roles/user]
+
+ [:db/add #db/id[:db.part/user] :db/ident :competitor.roles/admin]
+
  ]

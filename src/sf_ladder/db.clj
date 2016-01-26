@@ -3,16 +3,15 @@
             [clojure.tools.logging :as log]
             [datomic.api :as d]))
 
-(deftype DatomicDB [uri schema initial-data connection]
+(defrecord DatomicDB [uri schema initial-data connection]
   p/Component
   (start [this]
+    (d/create-database uri)
     (log/info "Starting database connection.")
-    (try (let [conn (d/connect uri)]
-           @(d/transact c schema)
-           @(d/transact c initial-data)
-           (assoc this :connection c))
-         (catch Exception e
-           (log/error e "An exception occurred:"))))
+    (let [conn (d/connect uri)]
+            @(d/transact conn schema)
+            @(d/transact conn initial-data)
+            (assoc this :connection conn)))
   (stop [this]
     (log/info "Stopping database connection.")
     this))

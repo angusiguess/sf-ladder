@@ -1,0 +1,9 @@
+[
+ ;; Admin-user
+ {:db/id #db/id[db.part/user -1000002]
+  :competitor/user-name "admin"
+  :competitor/email "admin@sf-ladder.com"
+  :competitor/psn-name ""
+  :competitor/elo 0
+  :competitor/password "$2a$10$YEcLBsNDng55zk3bZZkP4eZVXtlVm8yDaFVYpiHAEaud0RbOE3qze"}
+]
