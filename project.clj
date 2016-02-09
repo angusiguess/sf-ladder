@@ -11,4 +11,7 @@
                  [ring/ring-mock "0.3.0"]
                  [http-kit "2.1.18"]
                  [compojure "1.4.0"]]
+
+  :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :creds :gpg}}
   :main sf-ladder.core)
