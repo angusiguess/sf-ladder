@@ -27,8 +27,9 @@
   (if-authenticated req "Hi There"))
 
 (defn profile [conn req]
-  (if-authenticated req
-                    (comp/get-profile conn (:identity req))))
+  (let [{:keys [identity]} req]
+    (if-authenticated req
+                      (comp/get-profile conn identity))))
 
 (defn app [conn]
   (routes (GET "/" [] home)
