@@ -20,16 +20,19 @@
   (fn [req user]
     (let [{:keys [username password]} user]
       (when-let [user-password (comp/get-profile conn username [:competitor/password])]
-        (println password user-password)
-        (println (password/encrypt (:competitor/password user-password)))
         (when (password/check password (:competitor/password user-password))
           username)))))
 
 (defn home [req]
   (if-authenticated req "Hi There"))
 
-(defroutes app
-  (GET "/" [] home))
+(defn profile [conn req]
+  (if-authenticated req
+                    (comp/get-profile conn (:identity req))))
+
+(defn app [conn]
+  (routes (GET "/" [] home)
+          (GET "/profile" [] (partial profile conn))))
 
 (defn basic-backend [conn]
   (http-basic-backend {:realm "sf-ladder"
@@ -37,7 +40,7 @@
 
 (defn start [db]
   (let [{:keys [connection]} db
-        handler (-> app
+        handler (->  (app connection)
                     (wrap-authorization (basic-backend connection))
                     (wrap-authentication (basic-backend connection)))]
     (http/run-server handler {:port 8080})))
