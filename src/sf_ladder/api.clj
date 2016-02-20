@@ -2,6 +2,7 @@
   (:require [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.httpbasic :refer [http-basic-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [ring.middleware.edn :as edn]
             [crypto.password.scrypt :as password]
             [sf-ladder.db :as db]
             [sf-ladder.entities.competitor :as comp]
@@ -24,12 +25,16 @@
           username)))))
 
 (defn home [req]
-  (if-authenticated req "Hi There"))
+  (if-authenticated req {:status 200
+                         :headers {"Content-Type" "application/edn"}
+                         :body {:response "Hi There"}}))
 
 (defn profile [conn req]
   (let [{:keys [identity]} req]
     (if-authenticated req
-                      (comp/get-profile conn identity))))
+                      {:status 200
+                       :headers {"Content-Type" "application/edn"}
+                       :body (comp/get-profile conn identity)})))
 
 (defn app [conn]
   (routes (GET "/" [] home)
@@ -43,5 +48,6 @@
   (let [{:keys [connection]} db
         handler (->  (app connection)
                     (wrap-authorization (basic-backend connection))
-                    (wrap-authentication (basic-backend connection)))]
+                    (wrap-authentication (basic-backend connection))
+                    edn/wrap-edn-params)]
     (http/run-server handler {:port 8080})))

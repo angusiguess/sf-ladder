@@ -25,12 +25,12 @@
                                :competitor/password "$2a$10$YEcLBsNDng55zk3bZZkP4eZVXtlVm8yDaFVYpiHAEaud0RbOE3qze"}]))
 
 (deftest get-creds-returns-credentials-map
-  (println (c/get-profile @db-conn "admin@sf-ladder.com"))
-  (println (c/update-profile @db-conn "admin@sf-ladder.com" {:competitor/user-name "bob"}))
-  (println (c/get-profile @db-conn "admin@sf-ladder.com"))
+  (c/update-profile @db-conn "admin@sf-ladder.com" {:competitor/user-name "bob"})
   (is (= (c/get-profile @db-conn "admin@sf-ladder.com")
-         {:competitor/user-name "admin"
+         {:competitor/user-name "bob"
           :competitor/email "admin@sf-ladder.com"
           :competitor/password "$2a$10$YEcLBsNDng55zk3bZZkP4eZVXtlVm8yDaFVYpiHAEaud0RbOE3qze"
+          :competitor/psn-name ""
+          :competitor/elo 1600
           :competitor/roles [{:db/ident :competitor.roles/user}
                              {:db/ident :competitor.roles/admin}]})))
